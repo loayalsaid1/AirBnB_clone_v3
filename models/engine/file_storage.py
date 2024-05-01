@@ -88,10 +88,7 @@ class FileStorage:
 
     def count(self, cls=None):
         """Count all objects in storage or all objects of type <cls>"""
-        if cls and cls not in classes.values():
-            return 0
-
-        if cls:
+        if cls and cls in classes.values():
             objects = models.storage.all(cls).values()
         else:
             objects = models.storage.all().values()
