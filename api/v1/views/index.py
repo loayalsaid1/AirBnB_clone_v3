@@ -9,19 +9,24 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-
-
-classes = {
-    "amenities": 47,
-    "cities": 36,
-    "places": 154,
-    "reviews": 718,
-    "states": 27,
-    "users": 31
-}
+from models import storage
 
 
 @app_views.route("/status")
 def status():
     """Status of the API"""
     return jsonify({"status": "OK"})
+
+
+@app_views.route('/stats', strict_slashes=False)
+def stats():
+    """ that retrieves the number of each objects by type """
+    result = jsonify({'amenities': storage.count(Amenity),
+                      'cities': storage.count(City),
+                      'places': storage.count(Place),
+                      'reviews': storage.count(Review),
+                      'states': storage.count(State),
+                      'users': storage.count(User),
+                      })
+
+    return result
