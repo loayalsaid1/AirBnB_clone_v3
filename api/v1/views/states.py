@@ -6,7 +6,7 @@ from api.v1.views import app_views
 from flask import jsonify, abort, request
 
 
-@app_views.route("/states")
+@app_views.route("/states", strict_slashes=False)
 def get_states():
     """Gets states objects"""
     objects = storage.all(State).values()
@@ -20,7 +20,7 @@ def get_state(id):
     """Get specific state object"""
     state = storage.get(State, id)
 
-    if not object:
+    if not state:
         abort(404)
     else:
         return jsonify(state.to_dict())
