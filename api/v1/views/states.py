@@ -26,19 +26,21 @@ def get_state(id):
         return jsonify(state.to_dict())
 
 
-@app_views.route("/states/<id>")
+@app_views.route("/states/<id>", methods=["DELETE"])
 def delete_state(id):
     """deletes a state object"""
     state = storage.get(State, id)
     if state:
         storage.delete(state)
+        storage.save()
+
         return {}, 200
     else:
         abort(404)
 
 
-@app_views.route("/states/<id>", methods=["POST"])
-def create_state(id):
+@app_views.route("/states", methods=["POST"])
+def create_state():
     """create a state"""
     if request.content_type != 'application/json':
         abort(400, description="Not a JSON")
@@ -47,7 +49,7 @@ def create_state(id):
     if not data:
         abort(400, description="Not a JSON")
 
-    if not data['name']:
+    if not data.get('name'):
         abort(400, description="Missing name")
 
     state = State(name=data['name'])
