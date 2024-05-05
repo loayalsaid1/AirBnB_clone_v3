@@ -39,7 +39,7 @@ def delete_state(id):
         abort(404)
 
 
-@app_views.route("/states", methods=["POST"])
+@app_views.route("/states", strict_slashes=False, methods=["POST"])
 def create_state():
     """create a state"""
     if request.content_type != 'application/json':
@@ -56,3 +56,26 @@ def create_state():
     state.save()
 
     return jsonify(state.to_dict()), 201
+
+
+@app_views.route("/states/<id>", methods=["PUT"])
+def modify_state(id):
+    """Modify a state object"""
+    # Get the object
+    state = storage.get(State, id)
+    if not state:
+        abort(404)
+    # Get the items to change
+    if request.content_type != 'application/json':
+        abort(400, description="Not a JSON")
+    attributes = request.get_json()
+    # Filter it first
+    ignored_attrs = ["id", "created_at", "updated_at"]
+    for attr in ignored_attrs:
+        attributes.pop(attr, None)
+    # Apply changes
+    for key, value in attributes.items():
+        setattr(state, key, value)
+    state.save()
+    # Return
+    return state.to_dict(), 200
