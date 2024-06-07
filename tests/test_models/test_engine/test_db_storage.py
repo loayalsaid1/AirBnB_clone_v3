@@ -68,8 +68,8 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestDBStorage(unittest.TestCase):
-    """Test the DBStorage class"""
+class TestFileStorage(unittest.TestCase):
+    """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
@@ -86,19 +86,3 @@ class TestDBStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_get(self):
-        """Test the get function"""
-        # Test if the object does not exists
-        result = models.storage.get(State, "Fake ID")
-        self.assertIsNone(result)
-
-        # Test an existing object
-        state_obj = State(name="California")
-        state_obj.save()
-
-        result = models.storage.get(State, state_obj.id)
-
-        self.assertIsInstance(result, State)
-        self.assertEqual(result.id, state_obj.id)
