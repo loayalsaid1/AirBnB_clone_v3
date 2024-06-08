@@ -28,24 +28,21 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
-        if kwargs:
-            for key, value in kwargs.items():
-                if key != "__class__":
-                    setattr(self, key, value)
-            if kwargs.get("created_at", None) and type(self.created_at) is str:
-                self.created_at = datetime.strptime(kwargs["created_at"], time)
-            else:
-                self.created_at = datetime.utcnow()
-            if kwargs.get("updated_at", None) and type(self.updated_at) is str:
-                self.updated_at = datetime.strptime(kwargs["updated_at"], time)
-            else:
-                self.updated_at = datetime.utcnow()
-            if kwargs.get("id", None) is None:
-                self.id = str(uuid.uuid4())
-        else:
+        if not kwargs:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.utcnow()
-            self.updated_at = self.created_at
+            self.created_at = self.updated_at = datetime.now()
+        else:
+            if not kwargs.get('id'):
+                kwargs['id'] = str(uuid.uuid4())
+            if kwargs.get('created_at'):
+                kwargs['updated_at'] = kwargs[
+                    'created_at'] = datetime.strptime(
+                    kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+            else:
+                kwargs['created_at'] = kwargs['updated_at'] = datetime.now()
+            if kwargs.get("__class__"):
+                del kwargs['__class__']
+            self.__dict__.update(kwargs)
 
     def __str__(self):
         """String representation of the BaseModel class"""
