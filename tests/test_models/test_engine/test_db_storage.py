@@ -18,6 +18,7 @@ import json
 import os
 import pep8
 import unittest
+storage = models.storage
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -86,3 +87,62 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+
+class TestDBStorage(unittest.TestCase):
+    """Test Cases for DBStorage"""
+
+    def setUp(self):
+        """Set up environment for test cases"""
+        self.storage = DBStorage()
+        self.storage.reload()
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get_method(self):
+        """Test cases for the get() method"""
+        state = State(name="Cairo")
+        state.save()
+        self.assertIsNone(models.storage.get(State, None))
+        self.assertIsNone(models.storage.get(State, 123))
+        self.assertIsNone(models.storage.get(State, "no_id_given"))
+        self.assertIsNone(models.storage.get(list, state.id))
+        self.assertEqual(models.storage.get(State, state.id), state)
+
+    def clear_db():
+        """Clear the objects in the database"""
+        for cls in classes.values():
+            objects = storage._DBStorage__session.query(cls).delete()
+            [storage._DBStorage__session.delete(obj) for obj in objects]
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing file storage")
+    def test_count(self):
+        """Test the count method"""
+        for cls in classes.values():
+            storage._DBStorage__session.query(cls).delete()
+
+        count = storage.count
+
+        # Test when it's empty
+        self.assertEqual(count(), 0)
+        self.assertEqual(count(State), 0)
+
+        state_1 = State(name="Abuja")
+        state_2 = State(name="Lagos")
+
+        state_1.save()
+        state_2.save()
+        # Test After adding objects
+        self.assertEqual(count(State), 2)
+        self.assertEqual(count(), 2)
+
+        city = City(name="Owerri")
+        city_2 = City(name="Port Harcourt")
+        city.save()
+        city_2.save()
+        self.assertEqual(count(City), 2)
+
+        self.assertEqual(count(), 4)
+
+
+if __name__ == "__main__":
+    unittest.main()
