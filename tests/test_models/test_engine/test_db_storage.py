@@ -101,7 +101,7 @@ class TestDBStorage(unittest.TestCase):
         """Test cases for the get() method"""
         state = State(name="Cairo")
         state.save()
-        self.assertIsNone(models.storage.gett(State, None))
+        self.assertIsNone(models.storage.get(State, None))
         self.assertIsNone(models.storage.get(State, 123))
         self.assertIsNone(models.storage.get(State, "no_id_given"))
         self.assertIsNone(models.storage.get(list, state.id))
