@@ -96,16 +96,16 @@ class TestDBStorage(unittest.TestCase):
         self.storage = DBStorage()
         self.storage.reload()
 
-    # def test_get_method(self):
-    #     """Test cases for the get() method"""
-    #     state = State(name="Cairo")
-    #     self.storage.new(state)  # Add the state object to the storage
-    #     self.storage.save(state)  # Save the state object to the storage
-    #     self.assertEqual(self.storage.get(State, state.id), state)
-    #     self.assertIsNone(self.storage.get(State, "no_id_given"))
-    #     self.assertIsNone(self.storage.get(State, 123))
-    #     self.assertIsNone(self.storage.gett(State, None))
-    #     self.assertIsNone(self.storage.get(list, state.id))
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get_method(self):
+        """Test cases for the get() method"""
+        state = State(name="Cairo")
+        state.save()
+        self.assertIsNone(models.storage.gett(State, None))
+        self.assertIsNone(models.storage.get(State, 123))
+        self.assertIsNone(models.storage.get(State, "no_id_given"))
+        self.assertIsNone(models.storage.get(list, state.id))
+        self.assertEqual(models.storage.get(State, state.id), state)
 
 
 if __name__ == "__main__":
