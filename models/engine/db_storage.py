@@ -80,3 +80,9 @@ class DBStorage:
         if not isinstance(id, str) or cls not in classes.values():
             return None
         return self.__session.query(cls).filter_by(id=id).first()
+
+    def count(self, cls=None):
+        """Method that returns the number of objects in storage"""
+        if cls and cls not in classes.values():
+            return 0
+        return len(self.all(cls))

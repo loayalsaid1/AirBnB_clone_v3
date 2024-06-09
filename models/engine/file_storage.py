@@ -73,4 +73,10 @@ class FileStorage:
         """Method that returns the obj based on class and id, or None"""
         if not isinstance(id, str) or cls not in classes.values():
             return None
-        return self.__objects.get(cls + '.' + id)
+        return self.__objects.get(cls.__name__ + '.' + id)
+
+    def count(self, cls=None):
+        """Method that returns the number of objects in storage"""
+        if cls and cls not in classes.values():
+            return 0
+        return len(self.all(cls))
