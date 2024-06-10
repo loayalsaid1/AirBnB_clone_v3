@@ -25,7 +25,7 @@ def get_state(state_id):
 
 
 @app_views.route(
-    '/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+    '/states/<string:state_id>', methods=['DELETE'], strict_slashes=False)
 def delete_state(state_id):
     """Method to delete a State object"""
     state = storage.get(State, state_id)
@@ -44,7 +44,7 @@ def create_state():
     if not json_data:
         abort(400, description="Not a JSON")
 
-    if 'name' not in json_data:
+    if 'name' not in json_data.keys():
         abort(400, description="Missing name")
 
     state = State(**json_data)
