@@ -38,20 +38,20 @@ def delete_state(state_id):
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create_state():
     """Method to create a State object"""
-    try:
-        json_data = request.get_json()
-        if not json_data:
-            abort(400, description="Not a JSON")
+    # try:
+    json_data = request.get_json()
+    if not json_data:
+        abort(400, description="Not a JSON")
 
-        if 'name' not in json_data:
-            abort(400, description="Missing name")
+    if 'name' not in json_data:
+        abort(400, description="Missing name")
 
-        state = State(**json_data)
-        state.save()
-        return make_response(jsonify(state.to_dict()), 201)
+    state = State(**json_data)
+    state.save()
+    return make_response(jsonify(state.to_dict()), 201)
 
-    except Exception:
-        abort(500, description="Internal server error")
+    # except Exception:
+    #     abort(500, description="Internal server error")
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
