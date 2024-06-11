@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 """
 Contains the TestDBStorageDocs and TestDBStorage classes
 """
@@ -108,12 +109,6 @@ class TestDBStorage(unittest.TestCase):
         self.assertIsNone(models.storage.get(list, state.id))
         self.assertEqual(models.storage.get(State, state.id), state)
 
-    def clear_db():
-        """Clear the objects in the database"""
-        for cls in classes.values():
-            objects = storage._DBStorage__session.query(cls).delete()
-            [storage._DBStorage__session.delete(obj) for obj in objects]
-
     @unittest.skipIf(models.storage_t != 'db', "not testing file storage")
     def test_count(self):
         """Test the count method"""
@@ -128,20 +123,25 @@ class TestDBStorage(unittest.TestCase):
 
         state_1 = State(name="Abuja")
         state_2 = State(name="Lagos")
-
         state_1.save()
         state_2.save()
         # Test After adding objects
+
         self.assertEqual(count(State), 2)
         self.assertEqual(count(), 2)
 
-        city = City(name="Owerri")
-        city_2 = City(name="Port Harcourt")
+        city = City(name="Owerri", state_id=state_1.id)
+        city_2 = City(name="Port Harcourt", state_id=state_2.id)
         city.save()
         city_2.save()
         self.assertEqual(count(City), 2)
-
         self.assertEqual(count(), 4)
+        storage.delete(city)
+
+        storage.delete(city_2)
+        storage.delete(state_1)
+        storage.delete(state_2)
+        storage.save()
 
 
 if __name__ == "__main__":
