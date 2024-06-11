@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-"""Handles all API default routes for Place objects"""
 
 from flask import Flask, jsonify, abort, request, make_response
 from models import storage
