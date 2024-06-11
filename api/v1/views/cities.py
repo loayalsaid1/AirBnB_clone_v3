@@ -12,7 +12,8 @@ from flask import jsonify
                  methods=["GET", "POST"])
 def state_cities(state_id):
     """Get or add a cities of a specific state"""
-    if not (state := storage.get(State, state_id)):
+    state = storage.get(State, state_id)
+    if not state:
         abort(404)
 
     print(state.to_dict())
@@ -22,7 +23,8 @@ def state_cities(state_id):
 
         return jsonify(dict_cities)
     else:
-        if not (json_payload := request.get_json()):
+        json_payload = request.get_json()
+        if not json_payload:
             abort(400, description="Not a JSON")
 
         if "name" not in json_payload:
@@ -39,7 +41,8 @@ def state_cities(state_id):
                  methods=["DELETE", "GET", "PUT"])
 def cities(city_id):
     """Get, Delete, Modify a city object"""
-    if not (city := storage.get(City, city_id)):
+    city = storage.get(City, city_id)
+    if not city:
         abort(404)
 
     if request.method == "GET":
@@ -50,7 +53,8 @@ def cities(city_id):
 
         return jsonify({}), 200
     else:
-        if not (json_payload := request.get_json()):
+        json_payload = request.get_json()
+        if not json_payload:
             abort(400, description="Not a JSON")
 
         if "name" not in json_payload:

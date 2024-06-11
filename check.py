@@ -54,4 +54,3 @@ print(f"Review count: {storage.count(Review)}")
 print(f"State count: {storage.count(State)}")
 print(f"User count: {storage.count(User)}")
 print(f"Total count: {storage.count()}")
-

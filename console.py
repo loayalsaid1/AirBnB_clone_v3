@@ -20,7 +20,7 @@ def handle_update(args):
         obj_id = match.group(1)
         name = match.group(2)
         value = match.group(3)
-        return f"{obj_id} {name} {value}"
+        return "{} {} {}".format(obj_id, name, value)
     return args
 
 
@@ -74,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
             args = result.group(3)
             if command == "update":
                 args = handle_update(args)
-            line = f"{command} {model} {args}"
+            line = "{} {} {}".format(command, model, args)
         super().onecmd(line)
 
     # def precmd(self, line):
@@ -195,10 +195,11 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif args_len < 2:
             print("** instance id missing **")
-        elif args_len >= 2 and f"{args[0]}.{args[1]}" not in storage.all():
+        elif args_len >= 2 and "{}.{}".format(
+                args[0], args[1]) not in storage.all():
             print("** no instance found **")
         else:
-            obj = storage.all()[f"{args[0]}.{args[1]}"]
+            obj = storage.all()["{}.{}".format(args[0], args[1])]
             print(obj)
 
     def help_show(self):
@@ -217,10 +218,11 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif args_len < 2:
             print("** instance id missing **")
-        elif args_len >= 2 and f"{args[0]}.{args[1]}" not in storage.all():
+        elif args_len >= 2 and "{}.{}".format(
+                args[0], args[1]) not in storage.all():
             print("** no instance found **")
         else:
-            del storage.all()[f"{args[0]}.{args[1]}"]
+            del storage.all()["{}.{}".format(args[0], args[1])]
             storage.save()
 
     def help_destroy(self):
@@ -360,7 +362,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif args_len < 2:
             print("** instance id missing **")
-        elif args_len >= 2 and f"{args[0]}.{args[1]}" not in storage.all():
+        elif args_len >= 2 and "{}.{}".format(
+                args[0], args[1]) not in storage.all():
             print("** no instance found **")
         elif args_len < 3:
             print("** attribute name missing **")
@@ -368,7 +371,7 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
         else:
             model = HBNBCommand.classes[args[0]]
-            obj = storage.all()[f"{args[0]}.{args[1]}"]
+            obj = storage.all()["{}.{}".format(args[0], args[1])]
             value = args[3]
             if hasattr(obj, args[2]):
                 attr_type = type(getattr(obj, args[2]))

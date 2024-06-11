@@ -61,4 +61,3 @@ def user_id(user_id):
 
         storage.save()
         return jsonify(user.to_dict())
-
