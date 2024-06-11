@@ -1,21 +1,21 @@
 #!/usr/bin/python3
-"""Cities views"""
-from flask import request, abort
-from api.v1.views import app_views
+"""Handles all API default routes for User objects"""
+
+from flask import Flask, jsonify, abort, request, make_response
 from models import storage
 from models.user import User
-from flask import jsonify
+from api.v1.views import app_views
 
 
-@app_views.route("/users", strict_slashes=False,
-                 methods=["GET", "POST"])
+@app_views.route("/users", strict_slashes=False, methods=["GET", "POST"])
 def get_users():
-    """Get userss"""
+    """Handles GET and POST requests for User objects"""
     if request.method == "GET":
         users = storage.all(User).values()
         return jsonify([user.to_dict() for user in users])
     else:
-        if not (json_payload := request.get_json()):
+        json_payload = request.get_json(silent=True)
+        if not json_payload:
             abort(400, description="Not a JSON")
 
         if "email" not in json_payload:
@@ -26,15 +26,15 @@ def get_users():
 
         user = User(**json_payload)
         user.save()
+        return make_response(jsonify(user.to_dict()), 201)
 
-        return jsonify(user.to_dict()), 202
 
-
-@app_views.route('/users/<user_id>', strict_slashes=False,
-                 methods=["GET", "DELETE", "PUT"])
+@app_views.route('/users/<user_id>', strict_slashes=False, methods=[
+    "GET", "DELETE", "PUT"])
 def user_id(user_id):
-    """Affect specific user"""
-    if not (user := storage.get(User, user_id)):
+    """Handles GET, DELETE, and PUT requests for a specific User object"""
+    user = storage.get(User, user_id)
+    if not user:
         abort(404)
 
     if request.method == "GET":
@@ -43,9 +43,11 @@ def user_id(user_id):
         storage.delete(user)
         storage.save()
         return jsonify({}), 200
-    else:
-        if not (json_payload := request.get_json()):
+    else:  # PUT request
+        json_payload = request.get_json(silent=True)
+        if not json_payload:
             abort(400, description="Not a JSON")
+
         for key in ["id", "email", "created_at", "updated_at"]:
             if key in json_payload:
                 del json_payload[key]
@@ -53,5 +55,5 @@ def user_id(user_id):
         for key, value in json_payload.items():
             setattr(user, key, value)
 
-        storage.save()
-        return jsonify(user.to_dict())
+        user.save()
+        return jsonify(user.to_dict()), 200
