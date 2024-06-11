@@ -112,9 +112,10 @@ class TestDBStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing file storage")
     def test_count(self):
         """Test the count method"""
+        self.assertIn('count', dir(storage))
+
         for cls in classes.values():
             storage._DBStorage__session.query(cls).delete()
-
         count = storage.count
 
         # Test when it's empty
