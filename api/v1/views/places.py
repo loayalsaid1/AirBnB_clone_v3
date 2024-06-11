@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""Check the routes of /users and /users/place
+
+    Accept all of { get, post, put, and delete} on them    
+"""
 
 from flask import Flask, jsonify, abort, request, make_response
 from models import storage
