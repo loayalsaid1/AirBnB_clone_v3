@@ -31,7 +31,7 @@ def get_users():
         user = User(**json_payload)
         user.save()
 
-        return jsonify(user.to_dict()), 202
+        return jsonify(user.to_dict()), 201
 
 
 @app_views.route('/users/<user_id>', strict_slashes=False,
