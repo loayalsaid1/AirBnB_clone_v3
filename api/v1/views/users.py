@@ -18,7 +18,7 @@ def get_users():
         users = storage.all(User).values()
         return jsonify([user.to_dict() for user in users])
     else:
-        json_payload = request.get_json()
+        json_payload = request.get_json(silent=True)
         if not json_payload:
             abort(400, description="Not a JSON")
 
@@ -49,7 +49,7 @@ def user_id(user_id):
         storage.save()
         return jsonify({}), 200
     else:
-        json_payload = request.get_json()
+        json_payload = request.get_json(silent=True)
         if not json_payload:
             abort(400, description="Not a JSON")
         for key in ["id", "email", "created_at", "updated_at"]:

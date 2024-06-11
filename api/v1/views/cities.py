@@ -23,7 +23,7 @@ def state_cities(state_id):
 
         return jsonify(dict_cities)
     else:
-        json_payload = request.get_json()
+        json_payload = request.get_json(silent=True)
         if not json_payload:
             abort(400, description="Not a JSON")
 
@@ -53,7 +53,7 @@ def cities(city_id):
 
         return jsonify({}), 200
     else:
-        json_payload = request.get_json()
+        json_payload = request.get_json(silent=True)
         if not json_payload:
             abort(400, description="Not a JSON")
 
