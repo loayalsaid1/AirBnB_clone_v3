@@ -89,3 +89,15 @@ def update_place(place_id):
 
     place.save()
     return jsonify(place.to_dict()), 200
+
+
+@app_views.route(
+    '/places_search', methods=['POST'], strict_slashes=False)
+def place_search(city_id):
+    """Creates a new Place object using HTTP POST"""
+
+    place_data = request.get_json(silent=True)
+    if not place_data:
+        abort(400, description="Not a JSON")
+
+    return jsonify(storage.all(Place))
